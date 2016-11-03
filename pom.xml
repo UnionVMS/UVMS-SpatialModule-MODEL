@@ -105,9 +105,11 @@
         </snapshotRepository>
     </distributionManagement>
 
-    <scm>
-        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Spatial/APP/model</connection>
-    </scm>
+	<scm>
+		 <connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-spatialmodule-model.git</connection>
+		 <developerConnection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-spatialmodule-model.git</developerConnection>
+		 <url>https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
+	</scm>
 
     <profiles>
         <profile>
