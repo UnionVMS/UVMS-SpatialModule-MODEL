@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
-import eu.europa.ec.fisheries.uvms.spatial.model.FaultCode;
+import eu.europa.ec.fisheries.uvms.spatial.model.enums.FaultCode;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelValidationException;

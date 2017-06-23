@@ -5,7 +5,7 @@
     <artifactId>spatial-model</artifactId>
     <name>spatial-model</name>
     <packaging>ejb</packaging>
-    <version>0.5.5-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
@@ -19,6 +19,8 @@
         <logback.core.version>1.1.2</logback.core.version>
 		<maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
+
+        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SpatialModule-MODEL.git</scm.connection>
     </properties>
 
     <dependencies>
@@ -92,26 +94,46 @@
 
     </dependencies>
 
+    <scm>
+        <connection>${scm.connection}</connection>
+        <tag>spatial-model-1.0.1</tag>
+    </scm>
+
+
     <distributionManagement>
         <repository>
-            <id>digit-releases</id>
-            <name>DG DIGIT Repository</name>
-            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
+            <id>focus-releases</id>
+            <name>UnionVms Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>digit-snapshots</id>
-            <name>DG DIGIT Snapshot Repository</name>
-            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
+            <id>focus-snapshots</id>
+            <name>UnionVms Snapshot Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
-	<scm>
-		 <connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-spatialmodule-model.git</connection>
-		 <developerConnection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-spatialmodule-model.git</developerConnection>
-		 <url>https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
-	</scm>
 
     <profiles>
+        <profile>
+            <id>dg-mare</id>
+            <distributionManagement>
+                <repository>
+                    <id>digit-releases</id>
+                    <name>DG DIGIT Repository</name>
+                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>digit-snapshots</id>
+                    <name>DG DIGIT Snapshot Repository</name>
+                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+
+            <properties>
+                <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-spatialmodule-model.git</scm.connection>
+            </properties>
+        </profile>
         <profile>
             <id>generate-from-wsdl</id>
             <build>
