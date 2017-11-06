@@ -91,6 +91,11 @@
             <artifactId>logback-core</artifactId>
             <version>${logback.core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
+            <version>3.0.4-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

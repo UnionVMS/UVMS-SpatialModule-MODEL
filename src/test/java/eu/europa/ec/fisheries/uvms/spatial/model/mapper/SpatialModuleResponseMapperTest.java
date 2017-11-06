@@ -10,13 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
-import eu.europa.ec.fisheries.uvms.spatial.model.enums.FaultCode;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
@@ -30,9 +26,25 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Area;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByLocationSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaTypeNamesSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreasByLocationType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreaSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreasType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationsType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Location;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LocationType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialEnrichmentRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.UnitType;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 public class SpatialModuleResponseMapperTest {
 
@@ -57,31 +69,6 @@ public class SpatialModuleResponseMapperTest {
             fail("test should fail");
         } catch (SpatialModelMapperException e) {
             assertEquals("No correlationId in response (Null) . Expected was: null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testMapToAreasByLocationTypeFromResponseWithSpatialMessageFault() {
-        try {
-
-            SpatialFault error = SpatialModuleResponseMapper.createFaultMessage(FaultCode.SPATIAL_MESSAGE, FaultCode.SPATIAL_MESSAGE.toString());
-
-            JAXBContext jaxbContext = JAXBContext.newInstance(error.getClass());
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            StringWriter sw = new StringWriter();
-            marshaller.marshal(error, sw);
-
-            TextMessage mock = Mockito.mock(TextMessage.class);
-            when(mock.getJMSCorrelationID()).thenReturn("666");
-            when(mock.getText()).thenReturn(sw.toString());
-
-            SpatialModuleResponseMapper.mapToAreasByLocationTypeFromResponse(mock, "666");
-            fail("test should fail");
-        } catch (SpatialModelMapperException e) {
-            assertEquals("1700 : SPATIAL_MESSAGE", e.getMessage());
-        } catch (JMSException | JAXBException e) {
-            fail("test should not throw the exceptions");
         }
     }
 

@@ -8,23 +8,44 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
-import eu.europa.ec.fisheries.uvms.spatial.model.enums.FaultCode;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelValidationException;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
 import java.util.List;
+
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelValidationException;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Area;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByCodeResponse;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByLocationSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaExtendedIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaTypeNamesSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreasByLocationType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreasNameType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreaSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreasType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationsType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Location;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.PingRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialDeleteMapConfigurationRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialEnrichmentRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialFault;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurationRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SpatialModuleResponseMapper {
 
-    final static Logger LOG = LoggerFactory.getLogger(JAXBMarshaller.class);
+    final static Logger LOG = LoggerFactory.getLogger(SpatialModuleResponseMapper.class);
 
     private SpatialModuleResponseMapper() {
     }
@@ -44,25 +65,21 @@ public final class SpatialModuleResponseMapper {
                 throw new SpatialModelValidationException("Wrong correlationId in response. Expected was: " + correlationId + " But actual was: " + response.getJMSCorrelationID());
             }
 
-            //the following code is catching the exception in purpose. DO NOT MODIFY it!
-            try{
-                SpatialFault fault = JAXBMarshaller.unmarshall(response, SpatialFault.class);
-                throw new SpatialModelValidationException(fault.getCode() + " : " + fault.getFault());
-            } catch (SpatialModelMarshallException e) {
-                LOG.info("Expected Exception"); // Exception received in case if the validation is success
-            }
+            isValid(response);
 
         } catch (JMSException e) {
-            LOG.error("JMS exception during validation ", e);
-            throw new SpatialModelValidationException("JMS exception during validation " + e.getMessage());
+            LOG.error("JMS throwException during validation ", e);
+            throw new SpatialModelValidationException("JMS throwException during validation " + e.getMessage());
         }
     }
 
-    public static SpatialFault createFaultMessage(FaultCode code, String message) {
-        SpatialFault fault = new SpatialFault();
-        fault.setCode(code.getCode());
-        fault.setFault(message);
-        return fault;
+    private static void isValid(TextMessage response) throws SpatialModelValidationException {
+        try{
+            SpatialFault fault = JAXBUtils.unMarshallMessage(response.getText(), SpatialFault.class);
+            throw new SpatialModelValidationException(fault.getCode() + " : " + fault.getFault());
+        } catch (JMSException | JAXBException e) {
+            LOG.debug("Expected Exception");
+        }
     }
 
     public static String mapAreaByLocationResponse(final List<AreaExtendedIdentifierType> areasByLocation) throws SpatialModelMarshallException {
@@ -73,19 +90,19 @@ public final class SpatialModuleResponseMapper {
                 areasByLocationType.getAreas().addAll(areasByLocation);
             }
             response.setAreasByLocation(areasByLocationType);
-            return JAXBMarshaller.marshall(response);
-        } catch (SpatialModelMarshallException e) {
-            return exception(areasByLocation, e);
+            return JAXBUtils.marshallJaxBObjectToString(response);
+        } catch (JAXBException e) {
+            return throwException(areasByLocation, e);
         }
     }
 
     public static AreasByLocationType mapToAreasByLocationTypeFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            AreaByLocationSpatialRS areaByLocationSpatialRS = JAXBMarshaller.unmarshall(response, AreaByLocationSpatialRS.class);
+            AreaByLocationSpatialRS areaByLocationSpatialRS = JAXBUtils.unMarshallMessage(response.getText(), AreaByLocationSpatialRS.class);
             return areaByLocationSpatialRS.getAreasByLocation();
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+        } catch (JMSException | JAXBException e) {
+            return throwException(e);
         }
     }
 
@@ -100,19 +117,19 @@ public final class SpatialModuleResponseMapper {
                 }
             }
             response.setAreaTypes(areasNameType);
-            return JAXBMarshaller.marshall(response);
-        } catch (SpatialModelMarshallException e) {
-            return exception(areaTypeNames, e);
+            return JAXBUtils.marshallJaxBObjectToString(response);
+        } catch (JAXBException e) {
+            return throwException(areaTypeNames, e);
         }
     }
 
     public static AreasNameType mapToAreasNameTypeFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            AreaTypeNamesSpatialRS areaTypeNamesSpatialRS = JAXBMarshaller.unmarshall(response, AreaTypeNamesSpatialRS.class);
+            AreaTypeNamesSpatialRS areaTypeNamesSpatialRS = JAXBUtils.unMarshallMessage(response.getText(), AreaTypeNamesSpatialRS.class);
             return areaTypeNamesSpatialRS.getAreaTypes();
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+        } catch (JMSException | JAXBException e) {
+            return throwException(e);
         }
     }
 
@@ -124,19 +141,20 @@ public final class SpatialModuleResponseMapper {
                 closestLocationsType.getClosestLocations().addAll(closestLocations);
             }
             response.setClosestLocations(closestLocationsType);
-            return JAXBMarshaller.marshall(response);
-        } catch (SpatialModelMarshallException e) {
-            return exception(closestLocations, e);
+            return JAXBUtils.marshallJaxBObjectToString(response);
+        } catch (JAXBException e) {
+            return throwException(closestLocations, e);
         }
     }
 
     public static ClosestLocationsType mapToClosestLocationsTypeFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            ClosestLocationSpatialRS closestLocationSpatialRS = JAXBMarshaller.unmarshall(response, ClosestLocationSpatialRS.class);
+            ClosestLocationSpatialRS closestLocationSpatialRS = null;
+            closestLocationSpatialRS = JAXBUtils.unMarshallMessage(response.getText(), ClosestLocationSpatialRS.class);
             return closestLocationSpatialRS.getClosestLocations();
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+        } catch (JMSException | JAXBException e) {
+            return throwException(e);
         }
     }
 
@@ -148,131 +166,131 @@ public final class SpatialModuleResponseMapper {
                 closestAreasType.getClosestAreas().addAll(closestAreas);
             }
             response.setClosestArea(closestAreasType);
-            return JAXBMarshaller.marshall(response);
-        } catch (SpatialModelMarshallException e) {
-            return exception(closestAreas, e);
+            return JAXBUtils.marshallJaxBObjectToString(response);
+        } catch (JAXBException e) {
+            return throwException(closestAreas, e);
         }
     }
 
     public static ClosestAreasType mapToClosestAreasTypeFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            ClosestAreaSpatialRS closestAreaSpatialRS = JAXBMarshaller.unmarshall(response, ClosestAreaSpatialRS.class);
+            ClosestAreaSpatialRS closestAreaSpatialRS = JAXBUtils.unMarshallMessage(response.getText(), ClosestAreaSpatialRS.class);
             return closestAreaSpatialRS.getClosestArea();
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+        } catch (JMSException | JAXBException e) {
+            return throwException(e);
         }
     }
 
     public static String mapEnrichmentResponse(final SpatialEnrichmentRS spatialEnrichmentRS) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(spatialEnrichmentRS);
-        } catch (SpatialModelMarshallException e) {
-            return exception(spatialEnrichmentRS, e);
+            return JAXBUtils.marshallJaxBObjectToString(spatialEnrichmentRS);
+        } catch (JAXBException e) {
+            return throwException(spatialEnrichmentRS, e);
         }
     }
 
     public static SpatialEnrichmentRS mapToSpatialEnrichmentRSFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            return JAXBMarshaller.unmarshall(response, SpatialEnrichmentRS.class);
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+            return JAXBUtils.unMarshallMessage(response.getText(), SpatialEnrichmentRS.class);
+        } catch (JAXBException | JMSException e) {
+            return throwException(e);
         }
     }
 
     public static String mapFilterAreasResponse(FilterAreasSpatialRS filterAreasSpatialRS) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(filterAreasSpatialRS);
-        } catch (SpatialModelMarshallException e) {
-            return exception(filterAreasSpatialRS, e);
+            return JAXBUtils.marshallJaxBObjectToString(filterAreasSpatialRS);
+        } catch (JAXBException e) {
+            return throwException(filterAreasSpatialRS, e);
         }
     }
 
     public static String mapSpatialGetMapConfigurationResponse(SpatialGetMapConfigurationRS spatialGetMapConfigurationRS) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(spatialGetMapConfigurationRS);
-        } catch (SpatialModelMarshallException e) {
-            return exception(spatialGetMapConfigurationRS, e);
+            return JAXBUtils.marshallJaxBObjectToString(spatialGetMapConfigurationRS);
+        } catch (JAXBException e) {
+            return throwException(spatialGetMapConfigurationRS, e);
         }
     }
 
     public static String mapPingResponse(PingRS pingRS) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(pingRS);
-        } catch (SpatialModelMarshallException e) {
-            return exception(pingRS, e);
+            return JAXBUtils.marshallJaxBObjectToString(pingRS);
+        } catch (JAXBException e) {
+            return throwException(pingRS, e);
         }
     }
 
     public static FilterAreasSpatialRS mapToFilterAreasSpatialRSFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            return JAXBMarshaller.unmarshall(response, FilterAreasSpatialRS.class);
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+            return JAXBUtils.unMarshallMessage(response.getText(), FilterAreasSpatialRS.class);
+        } catch (JMSException | JAXBException e) {
+            return throwException(e);
         }
     }
 
     public static String mapSpatialSaveOrUpdateMapConfigurationRSToString(SpatialSaveOrUpdateMapConfigurationRS spatialSaveOrUpdateMapConfigurationRS) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(spatialSaveOrUpdateMapConfigurationRS);
-        } catch (SpatialModelMarshallException e) {
-            return exception(spatialSaveOrUpdateMapConfigurationRS, e);
+            return JAXBUtils.marshallJaxBObjectToString(spatialSaveOrUpdateMapConfigurationRS);
+        } catch (JAXBException e) {
+            return throwException(spatialSaveOrUpdateMapConfigurationRS, e);
         }
     }
 
 
     public static String mapAreaByCodeResponseToString(AreaByCodeResponse areaByCodeResponse) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(areaByCodeResponse);
-        } catch (SpatialModelMarshallException e) {
-            return exception(areaByCodeResponse, e);
+            return JAXBUtils.marshallJaxBObjectToString(areaByCodeResponse);
+        } catch (JAXBException e) {
+            return throwException(areaByCodeResponse, e);
         }
     }
 
     public static AreaByCodeResponse mapAreaByCodeResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            return JAXBMarshaller.unmarshall(response, AreaByCodeResponse.class);
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+            return JAXBUtils.unMarshallMessage(response.getText(), AreaByCodeResponse.class);
+        } catch (JMSException | JAXBException  e) {
+            return throwException(e);
         }
     }
 
     public static SpatialDeleteMapConfigurationRS mapToSpatialDeleteMapConfigurationRS(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            return JAXBMarshaller.unmarshall(response, SpatialDeleteMapConfigurationRS.class);
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+            return JAXBUtils.unMarshallMessage(response.getText(), SpatialDeleteMapConfigurationRS.class);
+        } catch (JMSException | JAXBException  e) {
+            return throwException(e);
         }
     }
 
     public static SpatialSaveOrUpdateMapConfigurationRS mapToSpatialSaveOrUpdateMapConfigurationRS(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            return JAXBMarshaller.unmarshall(response, SpatialSaveOrUpdateMapConfigurationRS.class);
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+            return JAXBUtils.unMarshallMessage(response.getText(), SpatialSaveOrUpdateMapConfigurationRS.class);
+        } catch (JMSException | JAXBException  e) {
+            return throwException(e);
         }
     }
 
     public static SpatialGetMapConfigurationRS mapToSpatialGetMapConfigurationRS(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
-            return JAXBMarshaller.unmarshall(response, SpatialGetMapConfigurationRS.class);
-        } catch (SpatialModelMarshallException e) {
-            return exception(e);
+            return JAXBUtils.unMarshallMessage(response.getText(), SpatialGetMapConfigurationRS.class);
+        } catch (JMSException | JAXBException  e) {
+            return throwException(e);
         }
     }
 
-    private static <T> String exception(T data, SpatialModelMarshallException e) throws SpatialModelMarshallException {
+    private static <T> String throwException(T data, Exception e) throws SpatialModelMarshallException {
         LOG.error("[ Error when marshalling data. ] {}", e);
         throw new SpatialModelMarshallException("Error when marshalling " + data.getClass().getName() + " to String");
     }
 
-    private static <T> T exception(SpatialModelMarshallException e) throws SpatialModelMarshallException {
+    private static <T> T throwException(Exception e) throws SpatialModelMarshallException {
         LOG.error("[ Error when marshalling data. ] {}", e);
         throw new SpatialModelMarshallException("Error when marshalling object to String", e);
     }

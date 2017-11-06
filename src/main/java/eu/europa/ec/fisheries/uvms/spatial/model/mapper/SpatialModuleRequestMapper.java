@@ -8,18 +8,46 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
+import javax.xml.bind.JAXBException;
+import java.util.List;
+
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AllAreaTypesRequest;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByCodeRequest;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByLocationSpatialRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaSimpleType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreaSpatialRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationSpatialRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.CoordinatesFormat;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LayerSettingsType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LocationType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.PointType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ReferenceDataType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScaleBarUnits;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScopeAreasType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialDeleteMapConfigurationRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialEnrichmentRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurationRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialModuleMethod;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.StyleSettingsType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.UnitType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.UserAreasType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.VisibilitySettingsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 public final class SpatialModuleRequestMapper {
 
-    final static Logger LOG = LoggerFactory.getLogger(JAXBMarshaller.class);
+    final static Logger LOG = LoggerFactory.getLogger(SpatialModuleRequestMapper.class);
 
     private SpatialModuleRequestMapper() {
     }
@@ -29,8 +57,8 @@ public final class SpatialModuleRequestMapper {
         request.setMethod(SpatialModuleMethod.GET_AREA_BY_LOCATION);
         request.setPoint(point);
         try {
-            return JAXBMarshaller.marshall(request);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(request);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -39,8 +67,8 @@ public final class SpatialModuleRequestMapper {
         AllAreaTypesRequest request = new AllAreaTypesRequest();
         request.setMethod(SpatialModuleMethod.GET_AREA_TYPES);
         try {
-            return JAXBMarshaller.marshall(request);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(request);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -51,8 +79,8 @@ public final class SpatialModuleRequestMapper {
         areaByCodeRequest.setAreaSimples(areaSimpleTypeList);
         areaByCodeRequest.setMethod(SpatialModuleMethod.GET_AREA_BY_CODE);
         try {
-            return JAXBMarshaller.marshall(areaByCodeRequest);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(areaByCodeRequest);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -69,8 +97,8 @@ public final class SpatialModuleRequestMapper {
         }
         request.setAreaTypes(area);
         try {
-            return JAXBMarshaller.marshall(request);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(request);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -86,8 +114,8 @@ public final class SpatialModuleRequestMapper {
         }
         request.setLocationTypes(loc);
         try {
-            return JAXBMarshaller.marshall(request);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(request);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -110,8 +138,8 @@ public final class SpatialModuleRequestMapper {
         request.setAreaTypes(area);
 
         try {
-            return JAXBMarshaller.marshall(request);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(request);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -131,24 +159,24 @@ public final class SpatialModuleRequestMapper {
                     new MapConfigurationType(reportId, spatialConnectId, mapProjectionId, displayProjectionId,
                             coordinatesFormat, scaleBarUnits, styleSettings, visibilitySettings,
                             layerSettingsType, referenceDataType);
-            return JAXBMarshaller.marshall(new SpatialSaveOrUpdateMapConfigurationRQ(SpatialModuleMethod.SAVE_OR_UPDATE_MAP_CONFIGURATION, mapConfiguration));
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(new SpatialSaveOrUpdateMapConfigurationRQ(SpatialModuleMethod.SAVE_OR_UPDATE_MAP_CONFIGURATION, mapConfiguration));
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
 
     public static String mapToSpatialGetMapConfigurationRQ(long reportId, List<String> permittedServiceLayers) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(new SpatialGetMapConfigurationRQ(SpatialModuleMethod.GET_MAP_CONFIGURATION, reportId, permittedServiceLayers));
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(new SpatialGetMapConfigurationRQ(SpatialModuleMethod.GET_MAP_CONFIGURATION, reportId, permittedServiceLayers));
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
 
     public static String mapToSpatialDeleteMapConfigurationRQ(List<Long> spatialConnectIds) throws SpatialModelMarshallException {
         try {
-            return JAXBMarshaller.marshall(new SpatialDeleteMapConfigurationRQ(SpatialModuleMethod.DELETE_MAP_CONFIGURATION, spatialConnectIds));
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(new SpatialDeleteMapConfigurationRQ(SpatialModuleMethod.DELETE_MAP_CONFIGURATION, spatialConnectIds));
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
@@ -163,13 +191,13 @@ public final class SpatialModuleRequestMapper {
             request.setMethod(SpatialModuleMethod.GET_FILTER_AREA);
             request.setScopeAreas(scopeAreas);
             request.setUserAreas(userAreas);
-            return JAXBMarshaller.marshall(request);
-        } catch (SpatialModelMarshallException ex) {
+            return JAXBUtils.marshallJaxBObjectToString(request);
+        } catch (JAXBException ex) {
             return logException(ex);
         }
     }
 
-    private static String logException(SpatialModelMarshallException ex) throws SpatialModelMarshallException {
+    private static String logException(Exception ex) throws SpatialModelMarshallException {
         LOG.error("[ Error when marshalling object to string ] ", ex);
         throw new SpatialModelMarshallException("[ Error when marshalling Object to String ]", ex);
     }
