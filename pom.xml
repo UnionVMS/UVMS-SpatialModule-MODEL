@@ -13,10 +13,10 @@
         <junit.version>4.11</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <jaxb2.version>0.9.4</jaxb2.version>
-        <mapstruct.version>1.0.0.Final</mapstruct.version>
-        <sl4j.version>1.7.12</sl4j.version>
-        <logback.version>1.1.2</logback.version>
-        <logback.core.version>1.1.2</logback.core.version>
+        <mapstruct.version>1.1.0.Final</mapstruct.version>
+        <sl4j.version>1.7.25</sl4j.version>
+        <logback.version>1.2.3</logback.version>
+        <logback.core.version>1.2.3</logback.core.version>
 		<maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
 
@@ -36,6 +36,7 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -65,7 +66,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <version>3.7</version>
         </dependency>
 
         <dependency>
@@ -94,7 +95,7 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
-            <version>3.0.4-SNAPSHOT</version>
+            <version>3.0.4</version>
         </dependency>
 
     </dependencies>
