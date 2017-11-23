@@ -11,9 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
-import javax.xml.bind.JAXBException;
-import java.util.List;
-
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AllAreaTypesRequest;
@@ -26,6 +23,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreaSpatialRQ;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationSpatialRQ;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.CoordinatesFormat;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.GeometryByPortCodeRequest;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LayerSettingsType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LocationType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
@@ -44,6 +42,9 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.UserAreasType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.VisibilitySettingsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
+import java.util.List;
 
 public final class SpatialModuleRequestMapper {
 
@@ -80,6 +81,19 @@ public final class SpatialModuleRequestMapper {
         areaByCodeRequest.setMethod(SpatialModuleMethod.GET_AREA_BY_CODE);
         try {
             return JAXBUtils.marshallJaxBObjectToString(areaByCodeRequest);
+        } catch (JAXBException ex) {
+            return logException(ex);
+        }
+    }
+
+    public static String mapToGeometryByPortCodeRequest(String portCode) throws SpatialModelMarshallException {
+
+        GeometryByPortCodeRequest geometryByPortCodeRequest = new GeometryByPortCodeRequest();
+        geometryByPortCodeRequest.setPortCode(portCode);
+        geometryByPortCodeRequest.setMethod(SpatialModuleMethod.GET_GEOMETRY_BY_PORT_CODE);
+
+        try {
+            return JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeRequest);
         } catch (JAXBException ex) {
             return logException(ex);
         }
