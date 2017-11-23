@@ -151,6 +151,7 @@
             <xs:enumeration value="DELETE_MAP_CONFIGURATION"/>
             <xs:enumeration value="PING"/>
             <xs:enumeration value="GET_AREA_BY_CODE"/>
+            <xs:enumeration value="GET_GEOMETRY_BY_PORT_CODE"/>
         </xs:restriction>
     </xs:simpleType>
 
