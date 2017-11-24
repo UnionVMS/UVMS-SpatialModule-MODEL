@@ -93,7 +93,10 @@ public final class SpatialModuleRequestMapper {
         geometryByPortCodeRequest.setMethod(SpatialModuleMethod.GET_GEOMETRY_BY_PORT_CODE);
 
         try {
-            return JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeRequest);
+            LOG.info("Inside mapToGeometryByPortCodeRequest.");
+            String value= JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeRequest);
+            LOG.info("after getting value.");
+            return value;
         } catch (JAXBException ex) {
             return logException(ex);
         }

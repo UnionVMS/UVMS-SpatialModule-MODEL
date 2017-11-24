@@ -224,6 +224,14 @@ public final class SpatialModuleResponseMapper {
         }
     }
 
+    public static String mapGeometryByPortCodeResponse(GeometryByPortCodeResponse geometryByPortCodeResponse) throws SpatialModelMarshallException {
+        try {
+            return JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeResponse);
+        } catch (JAXBException e) {
+            return throwException(geometryByPortCodeResponse, e);
+        }
+    }
+
     public static FilterAreasSpatialRS mapToFilterAreasSpatialRSFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
