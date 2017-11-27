@@ -11,11 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBException;
-import java.util.List;
-
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
@@ -33,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreasType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationSpatialRS;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationsType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.GeometryByPortCodeResponse;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.Location;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.PingRS;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialDeleteMapConfigurationRS;
@@ -42,6 +38,11 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurat
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
+import java.util.List;
 
 public final class SpatialModuleResponseMapper {
 
@@ -223,6 +224,14 @@ public final class SpatialModuleResponseMapper {
         }
     }
 
+    public static String mapGeometryByPortCodeResponse(GeometryByPortCodeResponse geometryByPortCodeResponse) throws SpatialModelMarshallException {
+        try {
+            return JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeResponse);
+        } catch (JAXBException e) {
+            return throwException(geometryByPortCodeResponse, e);
+        }
+    }
+
     public static FilterAreasSpatialRS mapToFilterAreasSpatialRSFromResponse(TextMessage response, String correlationId) throws SpatialModelMapperException {
         try {
             validateResponse(response, correlationId);
@@ -281,6 +290,15 @@ public final class SpatialModuleResponseMapper {
             validateResponse(response, correlationId);
             return JAXBUtils.unMarshallMessage(response.getText(), SpatialGetMapConfigurationRS.class);
         } catch (JMSException | JAXBException  e) {
+            return throwException(e);
+        }
+    }
+
+    public static GeometryByPortCodeResponse mapGeometryByPortCodeResponseToString(TextMessage geometryByPortCodeResponse, String correlationId) throws SpatialModelMarshallException, SpatialModelValidationException {
+        try {
+            validateResponse(geometryByPortCodeResponse, correlationId);
+            return JAXBUtils.unMarshallMessage(geometryByPortCodeResponse.getText(), GeometryByPortCodeResponse.class);
+        } catch (JMSException | JAXBException e) {
             return throwException(e);
         }
     }
