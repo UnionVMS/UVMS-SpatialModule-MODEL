@@ -178,6 +178,24 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+    <xs:element name="BatchSpatialEnrichmentRQ">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="SpatialModuleRequest">
+                    <xs:sequence>
+                        <xs:element name="enrichmentList" type="SpatialEnrichmentRQListElement" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="BatchSpatialEnrichmentRS">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="enrichmentRespList" type="SpatialEnrichmentRSListElement"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="AreaDetailsSpatialRequest">
         <xs:annotation>
             <xs:documentation>Root element for area details request</xs:documentation>

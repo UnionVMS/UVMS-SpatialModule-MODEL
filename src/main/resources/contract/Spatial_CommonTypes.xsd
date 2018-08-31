@@ -151,6 +151,7 @@
             <xs:enumeration value="GET_CLOSEST_AREA"/>
             <xs:enumeration value="GET_BUFFER_GEOM"/>
             <xs:enumeration value="GET_ENRICHMENT"/>
+            <xs:enumeration value="GET_ENRICHMENT_BATCH"/>
             <xs:enumeration value="GET_FILTER_AREA"/>
             <xs:enumeration value="GET_MAP_CONFIGURATION"/>
             <xs:enumeration value="SAVE_OR_UPDATE_MAP_CONFIGURATION"/>
@@ -224,12 +225,12 @@
             <xs:element name="spatialConnectId" type="xs:long" nillable="true"/>
             <xs:element name="mapProjectionId" type="xs:long" minOccurs="0"/>
             <xs:element name="displayProjectionId" type="xs:long" minOccurs="0"/>
-            <xs:element name="coordinatesFormat" type="CoordinatesFormat" minOccurs="0" />
+            <xs:element name="coordinatesFormat" type="CoordinatesFormat" minOccurs="0"/>
             <xs:element name="scaleBarUnits" type="ScaleBarUnits" minOccurs="0"/>
             <xs:element name="StyleSettings" type="StyleSettingsType" minOccurs="0"/>
-            <xs:element name="VisibilitySettings" type="VisibilitySettingsType" minOccurs="0" />
-            <xs:element name="LayerSettings" type="LayerSettingsType" minOccurs="0" />
-            <xs:element name="ReferenceData" type="ReferenceDataType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="VisibilitySettings" type="VisibilitySettingsType" minOccurs="0"/>
+            <xs:element name="LayerSettings" type="LayerSettingsType" minOccurs="0"/>
+            <xs:element name="ReferenceData" type="ReferenceDataType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -301,11 +302,11 @@
         <xs:complexContent>
             <xs:extension base="LayersType">
                 <xs:sequence>
-                    <xs:element name="areaType" type="xs:string" />
-                    <xs:element name="gid" type="xs:long" />
-                    <xs:element name="areaName" type="xs:string" />
-                    <xs:element name="areaDesc" type="xs:string" />
-                    <xs:element name="areaGroupName" type="xs:string" />
+                    <xs:element name="areaType" type="xs:string"/>
+                    <xs:element name="gid" type="xs:long"/>
+                    <xs:element name="areaName" type="xs:string"/>
+                    <xs:element name="areaDesc" type="xs:string"/>
+                    <xs:element name="areaGroupName" type="xs:string"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -347,20 +348,20 @@
     <xs:complexType name="PositionType">
         <xs:sequence>
             <xs:element name="attribute" type="xs:string"/>
-            <xs:element name="style" type="StyleDataType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="style" type="StyleDataType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="SegmentType">
         <xs:sequence>
             <xs:element name="attribute" type="xs:string"/>
-            <xs:element name="style" type="StyleDataType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="style" type="StyleDataType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:simpleType name="SpatialFeaturesEnum">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="MANAGE_ANY_USER_AREA" />
+            <xs:enumeration value="MANAGE_ANY_USER_AREA"/>
             <xs:enumeration value="MANAGE_SYSTEM_SPATIAL_CONFIGURATIONS"/>
             <xs:enumeration value="MANAGE_USER_DEFINED_AREAS"/>
             <xs:enumeration value="MANAGE_BOOKMARKS"/>
@@ -368,5 +369,22 @@
             <xs:enumeration value="CREATE_USER_AREA_DATASET"/>
         </xs:restriction>
     </xs:simpleType>
+
+    <xs:complexType name="SpatialEnrichmentRQListElement">
+        <xs:sequence>
+            <xs:element name="point" type="PointType"/>
+            <xs:element name="areaTypes" type="AreaType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="locationTypes" type="LocationType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="unit" type="UnitType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SpatialEnrichmentRSListElement">
+        <xs:sequence>
+            <xs:element name="AreasByLocation" type="AreasByLocationType"/>
+            <xs:element name="ClosestAreas" type="ClosestAreasType"/>
+            <xs:element name="ClosestLocations" type="ClosestLocationsType"/>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>

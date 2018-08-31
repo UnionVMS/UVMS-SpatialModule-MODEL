@@ -18,7 +18,7 @@ public enum FaultCode {
 
     private final int code;
 
-    private FaultCode(int code) {
+    FaultCode(int code) {
         this.code = code;
     }
 

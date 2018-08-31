@@ -13,33 +13,7 @@ package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AllAreaTypesRequest;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByCodeRequest;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByLocationSpatialRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaSimpleType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestAreaSpatialRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ClosestLocationSpatialRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.CoordinatesFormat;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.GeometryByPortCodeRequest;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LayerSettingsType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LocationType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.PointType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ReferenceDataType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScaleBarUnits;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScopeAreasType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialDeleteMapConfigurationRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialEnrichmentRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurationRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialModuleMethod;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.StyleSettingsType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.UnitType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.UserAreasType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.VisibilitySettingsType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,6 +133,28 @@ public final class SpatialModuleRequestMapper {
         } catch (JAXBException ex) {
             return logException(ex);
         }
+    }
+
+    public static String mapToCreateBatchSpatialEnrichmentRequest(List<SpatialEnrichmentRQListElement> spatialEnrichmentRQListElements) throws SpatialModelMarshallException {
+        BatchSpatialEnrichmentRQ batchRequest = new BatchSpatialEnrichmentRQ();
+        batchRequest.setEnrichmentLists(spatialEnrichmentRQListElements);
+        batchRequest.setMethod(SpatialModuleMethod.GET_ENRICHMENT_BATCH);
+        try {
+            return JAXBUtils.marshallJaxBObjectToString(batchRequest);
+        } catch (JAXBException ex) {
+            return logException(ex);
+        }
+    }
+
+
+    public static SpatialEnrichmentRQListElement mapToCreateSpatialEnrichmentRQElement(PointType point, UnitType unit, List<LocationType> locationTypes,
+                                                                                       List<AreaType> areaTypes) {
+        SpatialEnrichmentRQListElement spatialEnrichmentRQListElement = new SpatialEnrichmentRQListElement();
+        spatialEnrichmentRQListElement.setPoint(point);
+        spatialEnrichmentRQListElement.setUnit(unit);
+        spatialEnrichmentRQListElement.setLocationTypes(locationTypes);
+        spatialEnrichmentRQListElement.setAreaTypes(areaTypes);
+        return spatialEnrichmentRQListElement;
     }
 
     public static String mapToSpatialSaveOrUpdateMapConfigurationRQ(long reportId,
