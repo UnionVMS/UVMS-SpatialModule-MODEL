@@ -13,7 +13,7 @@
     <artifactId>spatial-model</artifactId>
     <name>spatial-model</name>
     <packaging>ejb</packaging>
-    <version>1.0.12</version>
+    <version>1.0.13-SNAPSHOT</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
@@ -98,7 +98,7 @@
 
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>spatial-model-1.0.12</tag>
+        <tag>spatial-model-1.0.1</tag>
     </scm>
 
 
