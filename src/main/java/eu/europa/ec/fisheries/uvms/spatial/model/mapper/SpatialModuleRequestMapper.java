@@ -61,16 +61,11 @@ public final class SpatialModuleRequestMapper {
     }
 
     public static String mapToGeometryByPortCodeRequest(String portCode) throws SpatialModelMarshallException {
-
         GeometryByPortCodeRequest geometryByPortCodeRequest = new GeometryByPortCodeRequest();
         geometryByPortCodeRequest.setPortCode(portCode);
         geometryByPortCodeRequest.setMethod(SpatialModuleMethod.GET_GEOMETRY_BY_PORT_CODE);
-
         try {
-            LOG.info("Inside mapToGeometryByPortCodeRequest.");
-            String value= JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeRequest);
-            LOG.info("after getting value.");
-            return value;
+            return JAXBUtils.marshallJaxBObjectToString(geometryByPortCodeRequest);
         } catch (JAXBException ex) {
             return logException(ex);
         }
