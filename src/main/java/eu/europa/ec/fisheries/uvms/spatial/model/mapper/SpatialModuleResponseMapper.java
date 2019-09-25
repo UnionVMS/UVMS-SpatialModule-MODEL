@@ -11,6 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
+import eu.europa.ec.fisheries.uvms.spatial.model.enums.FaultCode;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialFault;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
@@ -29,6 +31,13 @@ public final class SpatialModuleResponseMapper {
     final static Logger LOG = LoggerFactory.getLogger(SpatialModuleResponseMapper.class);
 
     private SpatialModuleResponseMapper() {
+    }
+    
+    public static SpatialFault createFaultMessage(FaultCode code, String message) {
+    	SpatialFault fault = new SpatialFault();
+        fault.setCode(code.getCode());
+        fault.setFault(message);
+        return fault;
     }
 
     private static void validateResponse(TextMessage response, String correlationId) throws SpatialModelValidationException {
