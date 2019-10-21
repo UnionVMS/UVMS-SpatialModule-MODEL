@@ -91,7 +91,7 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
-            <version>3.4-SNAPSHOT</version>
+            <version>${uvms.commonsLibrary.version}</version>
         </dependency>
 
     </dependencies>
