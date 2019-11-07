@@ -1,3 +1,8 @@
 *.iml
 target
 target/*
+.project
+.classpath
+.settings/
+pom.xml.versionsBackup
+.flattened-pom.xml
