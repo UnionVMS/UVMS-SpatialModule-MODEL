@@ -276,11 +276,19 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="TitleDataType">
+        <xs:sequence>
+            <xs:element name="code" type="xs:string" />
+            <xs:element name="title" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="VisibilityAttributeType">
         <xs:sequence>
-            <xs:element name="isAttributeVisible" type="xs:boolean"/>
             <xs:element name="order" minOccurs="0" type="xs:string" maxOccurs="unbounded"/>
             <xs:element name="values" minOccurs="0" type="xs:string" maxOccurs="unbounded"/>
+            <xs:element name="names" minOccurs="0" type="xs:string" maxOccurs="unbounded"/>
+            <xs:element name="titles" minOccurs="0" type="TitleDataType" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
