@@ -58,8 +58,7 @@ public final class SpatialModuleResponseMapper {
             isValid(response);
 
         } catch (JMSException e) {
-            LOG.error("JMS throwException during validation ", e);
-            throw new SpatialModelValidationException("JMS throwException during validation " + e.getMessage());
+            throw new SpatialModelValidationException("JMS throwException during validation " , e);
         }
     }
 
@@ -68,7 +67,7 @@ public final class SpatialModuleResponseMapper {
             SpatialFault fault = JAXBUtils.unMarshallMessage(response.getText(), SpatialFault.class);
             throw new SpatialModelValidationException(fault.getCode() + " : " + fault.getFault());
         } catch (JMSException | JAXBException e) {
-            LOG.debug("Expected Exception");
+            LOG.debug("Expected Exception",e);
         }
     }
 
@@ -310,12 +309,10 @@ public final class SpatialModuleResponseMapper {
     }
 
     private static <T> String throwException(T data, Exception e) throws SpatialModelMarshallException {
-        LOG.error("[ Error when marshalling data. ] {}", e);
-        throw new SpatialModelMarshallException("Error when marshalling " + data.getClass().getName() + " to String");
+        throw new SpatialModelMarshallException("Error when marshalling " + data.getClass().getName() + " to String",e);
     }
 
     private static <T> T throwException(Exception e) throws SpatialModelMarshallException {
-        LOG.error("[ Error when marshalling data. ] {}", e);
         throw new SpatialModelMarshallException("Error when marshalling object to String", e);
     }
 

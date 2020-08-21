@@ -16,4 +16,8 @@ public class SpatialModelValidationException extends SpatialModelMapperException
     public SpatialModelValidationException(String message) {
         super(message);
     }
+
+    public SpatialModelValidationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
