@@ -211,7 +211,6 @@ public final class SpatialModuleRequestMapper {
     }
 
     private static String logException(Exception ex) throws SpatialModelMarshallException {
-        LOG.error("[ Error when marshalling object to string ] ", ex);
         throw new SpatialModelMarshallException("[ Error when marshalling Object to String ]", ex);
     }
 }
