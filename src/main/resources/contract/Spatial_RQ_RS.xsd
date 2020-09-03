@@ -164,6 +164,7 @@
                             </xs:complexType>
                         </xs:element>
                         <xs:element name="Unit" type="UnitType"/>
+                        <xs:element name="userAreaActiveDate" type="xs:dateTime"/>
                     </xs:sequence>
                 </xs:extension>
             </xs:complexContent>
@@ -171,11 +172,9 @@
     </xs:element>
     <xs:element name="SpatialEnrichmentRS">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="AreasByLocation" type="AreasByLocationType"/>
-                <xs:element name="ClosestAreas" type="ClosestAreasType"/>
-                <xs:element name="ClosestLocations" type="ClosestLocationsType"/>
-            </xs:sequence>
+            <xs:complexContent>
+                <xs:extension base="CommonEnrichmentRSElement"/>
+            </xs:complexContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="BatchSpatialEnrichmentRQ">

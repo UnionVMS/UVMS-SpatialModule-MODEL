@@ -376,15 +376,26 @@
             <xs:element name="areaTypes" type="AreaType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="locationTypes" type="LocationType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="unit" type="UnitType"/>
+            <xs:element name="userAreaActiveDate" type="xs:dateTime"/>
+            <xs:element name="guid" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="SpatialEnrichmentRSListElement">
+        <xs:complexContent>
+            <xs:extension base="CommonEnrichmentRSElement">
+                <xs:sequence>
+                    <xs:element name="guid" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="CommonEnrichmentRSElement">
         <xs:sequence>
             <xs:element name="AreasByLocation" type="AreasByLocationType"/>
             <xs:element name="ClosestAreas" type="ClosestAreasType"/>
             <xs:element name="ClosestLocations" type="ClosestLocationsType"/>
         </xs:sequence>
     </xs:complexType>
-
 </xs:schema>
