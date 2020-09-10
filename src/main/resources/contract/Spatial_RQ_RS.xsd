@@ -170,6 +170,17 @@
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="BatchSpatialUserAreaEnrichmentRQ">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="SpatialModuleRequest">
+                    <xs:sequence>
+                        <xs:element name="areaTypes" type="AreaTypeElement" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="SpatialEnrichmentRS">
         <xs:complexType>
             <xs:complexContent>

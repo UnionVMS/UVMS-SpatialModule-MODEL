@@ -152,6 +152,9 @@
             <xs:enumeration value="GET_BUFFER_GEOM"/>
             <xs:enumeration value="GET_ENRICHMENT"/>
             <xs:enumeration value="GET_ENRICHMENT_BATCH"/>
+            <xs:enumeration value="GET_USER_AREA_ENRICHMENT_BY_WKT"/>
+            <xs:enumeration value="GET_USER_AREA_ENRICHMENT"/>
+            <xs:enumeration value="GET_USER_AREA_ENRICHMENT_BATCH"/>
             <xs:enumeration value="GET_FILTER_AREA"/>
             <xs:enumeration value="GET_MAP_CONFIGURATION"/>
             <xs:enumeration value="SAVE_OR_UPDATE_MAP_CONFIGURATION"/>
@@ -338,6 +341,13 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="AreaTypeElement">
+        <xs:sequence>
+            <xs:element name="wkt" type="xs:string" nillable="true" />
+            <xs:element name="userAreaActiveDate" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+    
     <xs:complexType name="StyleDataType">
         <xs:sequence>
             <xs:element name="key" type="xs:string"/>
