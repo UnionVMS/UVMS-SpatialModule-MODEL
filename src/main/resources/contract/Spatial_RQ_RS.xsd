@@ -64,7 +64,25 @@
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
-
+    <xs:element name="GetAreasGeometryUnionRQ">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="SpatialModuleRequest">
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="areas" type="AreaIdentifierType" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetAreasGeometryUnionRS">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Geometry" type="xs:string" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
     <xs:element name="PingRQ">
         <xs:complexType>
             <xs:complexContent>
