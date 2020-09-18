@@ -10,6 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
+import eu.europa.ec.fisheries.uvms.commons.xml.AbstractJAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.commons.xml.JAXBRuntimeException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,17 +21,13 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  **/
-public class JAXBMarshaller {
+public class JAXBMarshaller extends AbstractJAXBMarshaller {
 
     final static Logger LOG = LoggerFactory.getLogger(JAXBMarshaller.class);
 
@@ -40,28 +38,15 @@ public class JAXBMarshaller {
      *
      * @param <T> The type of data
      * @param data Data to be marshalled
-     * @return
-     * @throws eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException
+     * @return Marshalled string
+     * @throws eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException If marshalling fails
      */
     public static <T> String marshallJaxBObjectToString(T data) throws SpatialModelMarshallException {
         try {
-            JAXBContext jaxbContext = contexts.get(data.getClass().getName());
-            if (jaxbContext == null) {
-                long before = System.currentTimeMillis();
-                jaxbContext = JAXBContext.newInstance(data.getClass());
-                contexts.put(data.getClass().getName(), jaxbContext);
-                LOG.debug("Stored contexts: {}", contexts.size());
-                LOG.debug("JAXBContext creation time: {}", (System.currentTimeMillis() - before));
-            }
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            StringWriter sw = new StringWriter();
-            marshaller.marshal(data, sw);
-            long before = System.currentTimeMillis();
-            String marshalled = sw.toString();
-            LOG.debug("StringWriter time: {}", (System.currentTimeMillis() - before));
-            return marshalled;
-        } catch (JAXBException ex) {
+            Map<String,Object> properties = new HashMap<>();
+            properties.put(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            return marshallToString(data, properties);
+        } catch (JAXBException | JAXBRuntimeException ex) {
             LOG.error("[ Error when marshalling object to string ] {} ", ex.getMessage());
             throw new SpatialModelMarshallException("[ Error when marshalling Object to String ]", ex);
         }
@@ -74,28 +59,13 @@ public class JAXBMarshaller {
      * @param <R> The type to be unmarshalled to
      * @param textMessage The jsm TextMessage
      * @param clazz The class to be unmarshalled to
-     * @return The unmarshalled instance of <R> 
-     * @throws eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException
+     * @return The unmarshalled instance of <R>
+     * @throws eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException If unmarshalling fails
      */
     public static <R> R unmarshallTextMessage(TextMessage textMessage, Class<R> clazz) throws SpatialModelMarshallException {
         try {
-            JAXBContext jc = contexts.get(clazz.getName());
-            if (jc == null) {
-                long before = System.currentTimeMillis();
-                jc = JAXBContext.newInstance(clazz);
-                contexts.put(clazz.getName(), jc);
-                LOG.debug("Stored contexts: {}", contexts.size());
-                LOG.debug("JAXBContext creation time: {}", (System.currentTimeMillis() - before));
-            }
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            StringReader sr = new StringReader(textMessage.getText());
-            StreamSource source = new StreamSource(sr);
-            long before = System.currentTimeMillis();
-            R object = (R) unmarshaller.unmarshal(source);
-            LOG.debug("Unmarshalling time: {}", (System.currentTimeMillis() - before));
-            return object;
-        } catch (NullPointerException | JMSException | JAXBException ex) {
-            LOG.error("[ Error when marshalling Text message to object ] {} ", ex.getMessage());
+            return unmarshallTextMessage(textMessage.getText(), clazz);
+        } catch (NullPointerException | JMSException ex) {
             throw new SpatialModelMarshallException("[Error when unmarshalling response in ResponseMapper ]", ex);
         }
     }
@@ -107,30 +77,14 @@ public class JAXBMarshaller {
      * @param <R> The type to be unmarshalled to
      * @param textMessage The jsm text in string
      * @param clazz The class to be unmarshalled to
-     * @return The unmarshalled instance of <R> 
-     * @throws eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException
+     * @return The unmarshalled instance of <R>
+     * @throws eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException If unmarshalling fails
      */
     public static <R> R unmarshallTextMessage(String textMessage, Class<R> clazz) throws SpatialModelMarshallException {
         try {
-            JAXBContext jc = contexts.get(clazz.getName());
-            if (jc == null) {
-                long before = System.currentTimeMillis();
-                jc = JAXBContext.newInstance(clazz);
-                contexts.put(clazz.getName(), jc);
-                LOG.debug("Stored contexts: {}", contexts.size());
-                LOG.debug("JAXBContext creation time: {}", (System.currentTimeMillis() - before));
-            }
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            StringReader sr = new StringReader(textMessage);
-            StreamSource source = new StreamSource(sr);
-            long before = System.currentTimeMillis();
-            R object = (R) unmarshaller.unmarshal(source);
-            LOG.debug("Unmarshalling time: {}", (System.currentTimeMillis() - before));
-            return object;
-        } catch (NullPointerException | JAXBException ex) {
-            LOG.error("[ Error when unmarshalling string text message to object ] {} ", ex.getMessage());
+            return unmarshallTo(textMessage, clazz);
+        } catch (NullPointerException | JAXBException | JAXBRuntimeException ex) {
             throw new SpatialModelMarshallException("[Error when unmarshalling response in ResponseMapper ]", ex);
         }
     }
-
 }
