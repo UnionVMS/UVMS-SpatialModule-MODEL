@@ -201,9 +201,11 @@
     </xs:element>
     <xs:element name="SpatialEnrichmentRS">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="CommonEnrichmentRSElement"/>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="AreasByLocation" type="AreasByLocationType"/>
+                <xs:element name="ClosestAreas" type="ClosestAreasType"/>
+                <xs:element name="ClosestLocations" type="ClosestLocationsType"/>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="BatchSpatialEnrichmentRQ">

@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.spatial.model.mapper;
 
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBRuntimeException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public class JAXBMarshaller {
             String marshalled = sw.toString();
             LOG.debug("StringWriter time: {}", (System.currentTimeMillis() - before));
             return marshalled;
-        } catch (JAXBException | JAXBRuntimeException ex) {
+        } catch (JAXBException ex) {
             LOG.error("[ Error when marshalling object to string ] {} ", ex.getMessage());
             throw new SpatialModelMarshallException("[ Error when marshalling Object to String ]", ex);
         }

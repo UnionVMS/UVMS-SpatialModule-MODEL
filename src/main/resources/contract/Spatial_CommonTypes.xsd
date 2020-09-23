@@ -393,20 +393,11 @@
     </xs:complexType>
 
     <xs:complexType name="SpatialEnrichmentRSListElement">
-        <xs:complexContent>
-            <xs:extension base="CommonEnrichmentRSElement">
-                <xs:sequence>
-                    <xs:element name="guid" type="xs:string"/>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-    
-    <xs:complexType name="CommonEnrichmentRSElement">
         <xs:sequence>
             <xs:element name="AreasByLocation" type="AreasByLocationType"/>
             <xs:element name="ClosestAreas" type="ClosestAreasType"/>
             <xs:element name="ClosestLocations" type="ClosestLocationsType"/>
+            <xs:element name="guid" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
